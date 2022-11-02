@@ -1,0 +1,169 @@
+{% extends 'site_admin/layout.html' %}
+{% block 'page' %} Setup {% endblock %}
+{% block 'subpage' %} Site Info {% endblock %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<div class="row">
+
+    <div class="col-lg-12">
+        <div class="row" style="margin-bottom:10px">
+            <h3><b><span class="text-info">SITE DETAIL</span></b>
+                <button style="float:right;width:120px" type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#verticalycentered">Edit Info</button>
+            </h3>
+        </div>
+
+        <div class="row">
+            <div class="col-xxl-4 col-md-6">
+                <div class="card info-card sales-card">
+
+                    <div class="card-body">
+                        <h5 class="card-title"> <span> Site Name</span></h5>
+                        <div class="d-flex align-items-center">
+
+                            <div class="ps-3">
+                              <h6>{% if site_info.name %} {{ site_info.name|title }} {% else %} -------- {% endif %}</h6>
+                              <br />
+                              <span class="text-muted small pt-2 ps-1">TITLE: {% if site_info.title %} {{ site_info.title|capfirst }} {% else %} -------- {% endif %}</span>
+                              <br />
+                              <span class="text-muted small pt-2 ps-1">ADDRESS: {% if site_info.address %} {{ site_info.address|capfirst }} {% else %} -------- {% endif %}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xxl-4 col-md-6">
+                <div class="card info-card sales-card">
+
+                    <div class="card-body">
+                        <h5 class="card-title"> <span> Logo</span></h5>
+                        <div class="d-flex align-items-center">
+
+                            <div class="ps-3">
+                              <h6>{% if site_info.logo %} <img src="/media/{{ site_info.logo }}" style="max-height:100px;width:200px"  /> {% else %} -------- {% endif %}</h6>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xxl-4 col-md-6">
+                <div class="card info-card sales-card">
+
+                    <div class="card-body">
+                        <h5 class="card-title"> <span> Contact</span></h5>
+                        <div class="d-flex align-items-center">
+                            <div class="ps-3">
+                                <span class="text-muted small pt-2 ps-1">Line 1: {% if site_info.mobile_1 %} {{ site_info.mobile_1 }} {% else %} -------- {% endif %}</span> <br />
+                                <span class="text-muted small pt-2 ps-1">Line 2: {% if site_info.mobile_2 %} {{ site_info.mobile_2 }} {% else %} -------- {% endif %}</span> <br />
+                                <span class="text-muted small pt-2 ps-1">Whatsapp: {% if site_info.whatsapp %} {{ site_info.whatsapp }} {% else %} -------- {% endif %}</span> <br />
+                                <span class="text-muted small pt-2 ps-1">Email: {% if site_info.email %} {{ site_info.email|lower }} {% else %} -------- {% endif %}</span> <br />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xxl-4 col-md-6">
+                <div class="card info-card sales-card">
+
+                    <div class="card-body">
+                        <h5 class="card-title"> <span> Social Media</span></h5>
+                        <div class="d-flex align-items-center">
+                            <div class="ps-3">
+                                <span class="text-muted small pt-2 ps-1">FACEBOOK: {% if site_info.facebook %} {{ site_info.facebook|lower }} {% else %} -------- {% endif %}</span><br />
+                                <span class="text-muted small pt-2 ps-1">TWITTER: {% if site_info.twitter %} {{ site_info.twitter|lower }} {% else %} -------- {% endif %}</span><br />
+                                <span class="text-muted small pt-2 ps-1">INSTAGRAM: {% if site_info.instagram %} {{ site_info.instagram|lower }} {% else %} -------- {% endif %}</span><br />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<form method="POST" {% if is_site_info %} action="{% url 'site_info_update' site_info.id %}" {% else %} action="{% url 'site_info_create' %}" {% endif %} enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="verticalycentered" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Site Info</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating">
+                        {{ form.name }}
+                        <label for="floatingName">Site Name  <span style="color:red"><b>*</b></span></label>
+                    </div><br />
+
+                    <div class="form-floating">
+                        {{ form.title }}
+                        <label for="floatingName">Site Title  </label>
+                    </div><br />
+
+                    <div class="form-floating">
+                        {{ form.logo}}
+                        <label for="floatingName">Logo  </label>
+                    </div><br />
+
+                    <div class="form-floating">
+                        {{ form.address }}
+                        <label for="floatingName">Address  </label>
+                    </div><br />
+
+                    <div class="form-floating">
+                        {{ form.mobile_1 }}
+                        <label for="floatingName">Mobile One  </label>
+                    </div><br />
+
+                    <div class="form-floating">
+                        {{ form.mobile_2 }}
+                        <label for="floatingName">Mobile Two  </label>
+                    </div><br />
+
+                    <div class="form-floating">
+                        {{ form.whatsapp }}
+                        <label for="floatingName">Whatsapp Line </label>
+                    </div><br />
+
+                    <div class="form-floating">
+                        {{ form.email }}
+                        <label for="floatingName">Email </label>
+                    </div><br />
+
+                    <div class="form-floating">
+                        {{ form.facebook }}
+                        <label for="floatingName">Facebook Link </label>
+                    </div><br />
+
+                    <div class="form-floating">
+                        {{ form.twitter }}
+                        <label for="floatingName">Twitter Link </label>
+                    </div><br />
+
+                    <div class="form-floating">
+                        {{ form.instagram }}
+                        <label for="floatingName">Instagram Link </label>
+                    </div><br />
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% endblock %}

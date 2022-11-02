@@ -1,0 +1,150 @@
+{% extends 'site_admin/layout.html' %}
+{% block 'page' %} Setup {% endblock %}
+{% block 'subpage' %} Site Banner {% endblock %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<div class="col-12">
+    <div class="card recent-sales overflow-auto">
+        <div class="filter">
+            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li class="dropdown-header text-start">
+                    <h6>Action</h6>
+                </li>
+
+                <li><a class="dropdown-item" href="#">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#verticalycentered">Add Banner</button>
+                </a></li>
+            </ul>
+        </div>
+
+        <div class="card-body">
+            <h5 class="card-title">Website Banners</h5>
+            <table class="table table-borderless datatable">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Banner Title</th>
+                    <th scope="col">Banner Description</th>
+                    <th scope="col">Banner Image</th>
+                    <th scope="col">Status</th>
+                    <th scope="col" class="text-center">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if website_banner_list %}
+                {% for banner in website_banner_list %}
+                <tr>
+                    <th scope="row"><a href="#">{{ forloop.counter }}</a></th>
+                    <td style="padding-left:20px">{{ banner.title|capfirst }}</td>
+                    <td style="padding-left:20px">{{ banner.description|capfirst }}</td>
+                    <td style="padding-left:20px"><img src="/media/{{banner.image}}" style="width:200px;height:120px"></td>
+                    <td style="padding-left:20px">{{ banner.status|upper }}</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit{{ forloop.counter }}">Edit</button>
+                        <a href="{% url 'banner_delete' banner.id %}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                    <tr><td colspan="10"><h3 class="text-center">No Available Banner</h3></td></tr>
+                {% endif %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<form method="POST" action="{% url 'banner_create' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="verticalycentered" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Transaction Charge</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating">
+                        {{ form.title }}
+                        <label for="floatingName">Banner Title<span style="color:red"><b>*</b></span></label><br />
+                    </div>
+
+                    <div class="form-floating">
+                        {{ form.description }}
+                        <label for="floatingName">Banner Description<span style="color:red"><b>*</b></span></label><br />
+                    </div><br />
+
+                    <div class="form-floating">
+                        {{ form.image }}
+                        <label for="floatingName">Banner Image<span style="color:red"><b>*</b></span></label><br />
+                    </div>
+
+                    <div class="form-floating">
+                        {{ form.status }}
+                        <label for="floatingName">Banner Status<span style="color:red"><b>*</b></span></label><br />
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% for banner in website_banner_list %}
+<form method="POST" action="{% url 'banner_edit' banner.id %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="edit{{ forloop.counter }}" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Website Banner</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control" name="title" value="{{ banner.title }}" required="required">
+                        <label for="floatingName">Banner Title <span style="color:red"><b>*</b></span></label><br />
+                    </div>
+
+                        <div class="form-floating ">
+                            <textarea class="form-control" name="description" required="required">{{banner.description}}</textarea>
+                            <label for="floatingName">Banner Description <span style="color:red"><b>*</b></span></label><br />
+                        </div><br />
+
+                        <div class="form-floating ">
+                            <input type="file" class="form-control" name="image" value="/media/{{ banner.image }}" required="required">
+                            <label for="floatingName">Banner Image<span style="color:red"><b>*</b></span></label><br />
+                        </div>
+
+
+                        <br />
+
+                        <div class="form-floating">
+                            <select required="required" name="status" class="form-control">
+                                <option {% if banner.status == 'active' %} selected="selected" {% endif %} value="active">ACTIVE</option>
+                                <option {% if banner.status == 'inactive' %} selected="selected" {% endif %} value="inactive">INACTIVE</option>
+                            </select>
+                            <label for="floatingName">BANNER STATUS<span style="color:red"><b>*</b></span></label>
+                        </div><br />
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endfor %}
+
+
+{% endblock %}

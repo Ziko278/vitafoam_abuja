@@ -1,0 +1,16 @@
+{% extends 'home/mail/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<hr /><br />
+
+<div class="" style="background:white">
+
+	<h4 class="" style="font-family:courier;text-align:center;font-size:25px;margin-top:-15px"><b>Message from {{ full_name|title }}</b></h4>
+	
+	<p style="font-family:courier;font-size:20px;margin-top:-15px">Full Name: <b>{{ full_name|title }}</b></p>
+	<p style="font-family:courier;font-size:20px;margin-top:-15px">Mobile: <b>{{ mobile }}</b></p><br />
+	<p style="font-family:courier;font-size:20px;margin-top:15px">{{ message }}</p>
+
+</div>
+{%endblock %}

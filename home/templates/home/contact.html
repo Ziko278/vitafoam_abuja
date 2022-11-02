@@ -1,0 +1,53 @@
+{% extends 'home/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+ <section class="contact spad" style="background:lightgrey;padding-top:50px">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 col-md-6">
+                    <div class="contact__text">
+                        <div class="section-title">
+                            <h2>Contact Us</h2>
+                            <p>We are always available for you. Reach out to us anytime anyday.</p>
+                        </div>
+                        <ul>
+                            <li>
+                                
+                                <p style="font-size:20px">
+                                    <a href="tel:{{site_info.mobile_1}}" style="color:black;font-family:courier;font-size:24px"><i class="fa fa-phone" style="text-shadow:1px 1px yellow"></i> {{site_info.mobile_1}}</a> <br /><br>
+									<a href="tel:{{site_info.mobile_2}}" style="color:black;font-family:courier;font-size:24px"><i class="fa fa-phone" style="text-shadow:1px 1px yellow"></i> {{site_info.mobile_2}}</a> <br /><br>
+									<a href="https://wa.me/{{ site_info.whatsapp }}"><i class="fa fa-whatsapp" style="font-size:50px;text-shadow:2px 2px black;color:green;margin-left:15px"></i></a>
+								</p>
+                                <p>
+
+                                </p>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6">
+                    <div class="contact__form">
+                        <form method='POST' action="{% url 'send_admin_mail' %}">
+							{% csrf_token %}
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <input type="text" placeholder="Full Name" name="full_name">
+                                </div>
+                                <div class="col-lg-6">
+                                    <input type="text" placeholder="Phone Number" name="mobile">
+                                </div>
+                                <div class="col-lg-12">
+                                    <textarea placeholder="Message" name="message"></textarea>
+                                    <button type="submit" class="site-btn">Send Message</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Contact Section End -->
+{%endblock %}

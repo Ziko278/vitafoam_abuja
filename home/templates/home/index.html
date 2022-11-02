@@ -1,0 +1,139 @@
+{% extends 'home/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet">
+   <!-- Hero Section Begin -->
+    <section class="hero" style="background:grey">
+        <div class="hero__slider owl-carousel">
+
+            {% for banner in banner_list %}
+            <div class="hero__items set-bg" data-setbg="/media/{{banner.image}}" style="height:450px">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xl-5 col-lg-7 col-md-8">
+                            <div class="hero__text" style="margin-top:-100px">
+                                <h6 style="margin-bottom:0px;">{{ site_info.name|title }} Collection</h6>
+                                <h2><b>{{banner.title}}</b></h2>
+                                <p style="color:white"><b>{{banner.description}}</b></p>
+                                <a href="{% url 'shop' 'all' %}" class="primary-btn">Shop now <span class="fa fa-arrow-down"></span></a>
+                                <div class="hero__social">
+                                    <a href="#"><i class="fa fa-facebook"></i></a>
+                                    <a href="#"><i class="fa fa-twitter"></i></a>
+                                    <a href="#"><i class="fa fa-instagram"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+
+        </div>
+    </section>
+    <!-- Hero Section End -->
+
+
+<!-- Banner Section Begin -->
+    <section class="banner spad" style="margin-top:-50px">
+        <div class="container">
+			<div class="row" style="font-family:san-serif">
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div class="about__item">
+						<p class="text-center"><i class="fa fa-ambulance" style="font-size:40px;color:orange"></i></p>
+                        <h4 style="font-family:san-serif;text-shadow:1px 1px orange">SAME DAY DELIVERY FOR GOODS WITHIN ABUJA ONLY</h4>
+                        
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div class="about__item">
+						<p class="text-center"><i class="fa fa-gift" style="font-size:40px;color:orange"></i></p>
+                        <h4 style="font-family:san-serif;text-shadow:1px 1px orange">FREE DELIVERY FOR GOODS ABOVE N50,000 WITHIN ABUJA</h4>
+                        
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div class="about__item">
+					<p class="text-center"><i class="fa fa-money" style="font-size:40px;color:orange"></i></p>
+                        <h4 style="font-family:san-serif;text-shadow:1px 1px orange">FLEXIBLE PAYMENT ONLINE OR ON DELIVERY OF GOODS</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+				<h2 style="font-family:cursive;margin:auto;margin-bottom:20px;"><b><i>Shop by Category </i></b></h2>
+                {% for category in category_list %}
+                <div {% if forloop.counter == 1 %} class="col-lg-7 offset-lg-4" {% elif forloop.counter == 2 %} class="col-lg-5" {% else %} class="col-lg-7" {% endif %}>
+                    <div {% if forloop.counter == 1 %} class="banner__item" {% elif forloop.counter == 2 %} class="banner__item banner__item--middle" {% else %} class="banner__item banner__item--last" {% endif %} >
+                        <div class="banner__item__pic">
+							<a href="{% url 'shop' category.title %}">
+								<img src="/media/{{category.image}}" alt="" style="width:350px;height:200px">
+							</a>	
+                        </div>
+                        <div class="banner__item__text">
+                            <h2>{{category.title}}</h2>
+                            <a href="{% url 'shop' category.title %}">Shop now</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <!-- Banner Section End -->
+
+
+
+    <!-- Product Section Begin -->
+    <section class="product spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="filter__controls">
+                        <li class="active" data-filter="*">All</li>
+                        {% for category in category_list %}
+                            <li data-filter=".{{category.title}}">{{category.title|capfirst}}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="row product__filter" style="padding-top:15px">
+                {% for product in product_list %}
+					{% if product.has_variant %}
+						<div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix {{product.category.title}}">
+							<div class="product__item">
+								<a href="{% url 'shop-detail' product.first_variant.id %}">
+									<div class="product__item__pic set-bg" data-setbg="/media/{{product.image}}" style="height:200px">
+									</div>
+								</a>
+
+								<div class="product__item__text">
+									<h6>{{product.name|capfirst}}</h6>
+									<a class="add-cart" price="{{product.start_price|floatformat}}" pk="{{product.first_variant.id}}" status="o">{% if not product.first_variant.id in request.session.cart %} + Add To Cart {% else %} Remove From Cart {% endif %}</a>
+
+									<h5>{% if product.start_price == product.end_price %} N{{ product.end_price|floatformat|intcomma }} {% else %}  N{{ product.start_price|floatformat|intcomma }} -  N{{ product.end_price|floatformat|intcomma }} {% endif %}</h5>
+										
+								</div>
+							</div>
+							<div style="margin-top:-15px;">
+								{% if product.has_many_variant %}
+								<select onchange="location=this.value;" style="width:350px;position:relative;top:-100px" >
+									<option value=''>------ SELECT SIZE -----</option>
+
+									{% for variant in product.all_variants %}
+										<option value="{% url 'shop-detail' variant.id %}">{{variant.size|upper }} - N{{ variant.price|floatformat|intcomma }} </option>
+									{% endfor %}
+								</select>
+								<br />
+						
+								{% endif %}
+							</div>
+						</div>
+						
+					{% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <!-- Product Section End -->
+{%endblock %}

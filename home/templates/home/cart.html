@@ -1,0 +1,154 @@
+{% extends 'home/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-option" style="padding:10px">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text">
+                        <h4>Shopping Cart</h4>
+                        <div class="breadcrumb__links">
+                            <a href="{% url 'home' %}">Home</a>
+                            <a href="{% url 'shop' 'all' %}">Shop</a>
+                            <span>Shopping Cart</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+<form method="POST" action="">
+    {% csrf_token %}
+    <!-- Shopping Cart Section Begin -->
+    <section class="shopping-cart spad" style="padding:30px 0px 0px 0px">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="shopping__cart__table">
+
+                        <table >
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>QTY</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for variant in product_list %}
+                                <tr style="padding:0px" id="cart_row{{forloop.counter}}">
+                                    <td class="product__cart__item" style="min-width:100px">
+                                        <div class="product__cart__item__pic">
+                                            <img style="height:70px;width:100px" {% if variant.main_view %} src="/media/{{ variant.main_view }}" {% else %} src="/media/{{ variant.product.image }}" {% endif %} alt="">
+                                        </div>
+                                        <div class="product__cart__item__text">
+                                            <h6>{{ variant.product.name|title }} <br />{% if variant.size %} ({{ variant.size|upper }}) {% endif %}</h6>
+                                            
+                                        </div>
+                                    </td>
+                                    <td class="quantity__item" style="padding:0px;width:40px;margin:0px">
+                                        <input type="hidden" name="product_list[]" value="{{variant.id}}">
+                                        <input type="number" value="1" name="quantity_list[]" required price="{{variant.price}}" class="form-control change_quantity" row="{{forloop.counter}}" min="1" style="width:50px;margin-right:10px">
+                                    <td class="cart__price" style="margin-left:-30px;">N<span id="total{{forloop.counter}}">{{ variant.price|floatformat|intcomma }}</span></td>
+									<td><i class="fa fa-close remove_from_cart" row="{{forloop.counter}}" pk="{{variant.id}}" price="{{variant.price|floatformat}}" style="font-size:25px;color:red"></i></td>
+                                </tr>
+                            {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+
+                    <div class="cart__total">
+                        <h6>Cart total</h6>
+                        <ul>
+
+                            <li>Total N<span id="sub_total">{{ total_amount|floatformat }}</span></li>
+                        </ul>
+                        <button class="primary-btn">Proceed to checkout</button> <br />
+
+                        <a href="{% url 'shop' 'all' %}" class="primary-btn">Continue Shopping</a>
+                        </div>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+    <!-- Shopping Cart Section End -->
+    <script src="{% static 'home/js/jquery.min.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            $('.change_quantity').change(function(){
+                total_amount=0
+                $('.change_quantity').each(function(){
+                    row = $(this).attr('row')
+                    amount = $(this).attr('price')
+                    amount = parseInt(amount)
+                    quantity = $(this).val()
+                    total = amount * quantity
+                    $('#total'+row).html(total)
+                    total_amount += total
+                    $('#sub_total').html(total_amount)
+                })
+            })
+            $('.change_quantity').keyup(function(){
+                total_amount=0
+                $('.change_quantity').each(function(){
+                    row = $(this).attr('row')
+                    amount = $(this).attr('price')
+                    amount = parseInt(amount)
+                    quantity = $(this).val()
+                    total = amount * quantity
+                    $('#total'+row).html(total)
+                    total_amount += total
+                    $('#sub_total').html(total_amount)
+                })
+            })
+			
+			$('.remove_from_cart').click(function(){
+				row = $(this).attr('row')
+				pk = $(this).attr('pk')
+
+                items = $('.cart_item_count').html()
+                items_count = parseInt(items)
+                cart_price = $('.price').html()
+                cart_price = parseInt(cart_price)
+                price = $(this).attr('price')
+                price = parseFloat(price)
+				
+                $.ajax({
+                    url: "{% url 'remove_from_cart' %}",
+                    data: {
+                        'id': pk,
+                        'price': price
+                    },
+                    success: function(data){
+                        if(data == 'removed'){
+                            items_count -= 1
+                            cart_price -= price
+
+							$('.cart_item_count').html(items_count)
+							$('.price').html(cart_price)
+							$('#cart_row'+row).remove()
+							$('#sub_total').html(cart_price)
+						}
+                    }
+                })
+				
+                
+            })
+        })
+    </script>
+
+{%endblock %}

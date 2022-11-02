@@ -1,0 +1,65 @@
+{% extends 'home/layout.html' %}
+{% load static %}
+{% block 'main' %}
+{% load humanize %}
+<section id="featured-services" class="featured-services" style="padding-top:20px;border-top:2px solid grey">
+    <div class="container">
+        <div class="row gy-4">
+
+            <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="100">
+                <div class="icon flex-shrink-0"><i class="fa-solid fa-wallet"></i></div>
+                <div>
+
+                    <h4 class="title" style="font-family:courier"><b>Pay with Paystack </b></h4>
+
+                    <form id="paymentForm">
+                        <div class="form-group">
+						<br />
+                            <label for="amount"><b>Amount: Pay N{{ last_checkout.grand_total|floatformat|intcomma }} for your order </b></label><br />
+							<input type="hidden" id=="reference" name="reference" value="{{last_checkout.id }}" />
+                            <input type="hidden" id="amount" required="required" value="{{last_checkout.grand_total|floatformat}}" class="form-control" placeholder="Enter Amount">
+                            <br />
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" onclick="payWithPaystack()" required="required" class="btn btn-outline-primary">Make Payment</button>
+                        </div>
+                    </form>
+                </div>
+            </div><!-- End Service Item -->
+
+
+        </div>
+    </div>
+</section><!-- End Featured Services Section -->
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+    var paymentForm = document.getElementById('paymentForm');
+paymentForm.addEventListener('submit', payWithPaystack, false)
+
+function payWithPaystack(e){
+    e.preventDefault();
+
+    var handler = PaystackPop.setup({
+        key: '{{paystack_secret_key}}',
+        amount: document.getElementById('amount').value * 100,
+        //email: document.getElementById('email').value,
+        email: '{{site_info.email}}',
+        currency: 'NGN',
+        callback: function(response){
+            var reference = response.reference;
+<!--            alert('Payment Complete, Reference: '+ reference)-->
+             window.location = '{{ callback_url }}' + '?reference=' +reference
+        },
+        onClose: function(response){
+            window.location = '{{ callback_url }}'
+        },
+    });
+
+    handler.openIframe();
+
+}
+
+</script>
+{%endblock %}

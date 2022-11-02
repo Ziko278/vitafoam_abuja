@@ -1,0 +1,150 @@
+{% extends 'site_admin/layout.html' %}
+{% block 'page' %} Catalog {% endblock %}
+{% block 'subpage' %} Product {% endblock %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<div class="col-12">
+    <div class="card recent-sales overflow-auto">
+        <div class="filter">
+            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li class="dropdown-header text-start">
+                    <h6>Action</h6>
+                </li>
+
+                <li><a class="dropdown-item" href="#">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#verticalycentered">Add Product</button>
+                </a></li>
+            </ul>
+        </div>
+
+        <div class="card-body">
+            <h5 class="card-title">Products</h5>
+            <table class="table table-borderless datatable">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Image</th>
+                    <th scope="col" class="text-center">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if product_list %}
+                {% for product in product_list %}
+                <tr>
+                    <th scope="row"><a href="#">{{ forloop.counter }}</a></th>
+                    <td style="padding-left:20px">{{ product.name|capfirst }}</td>
+                    <td style="padding-left:20px">{{ product.category.title|capfirst }}</td>
+                    <td style="padding-left:20px">{{ product.description|capfirst }}</td>
+                    <td style="padding-left:20px"><img src="/media/{{product.image}}" style="width:150px;height:100px"></td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit{{ forloop.counter }}">Edit</button>
+                        <a href="{% url 'product_detail' product.id %}" class="btn btn-success">Detail</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                    <tr><td colspan="10"><h3 class="text-center">No Available Product</h3></td></tr>
+                {% endif %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<form method="POST" action="{% url 'product_create' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="verticalycentered" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating">
+                        {{ form.name }}
+                        <label for="floatingName">Product Name<span style="color:red"><b>*</b></span></label><br />
+                    </div>
+
+                    <div class="form-floating">
+                        {{ form.category}}
+                        <label for="floatingName">Category<span style="color:red"><b>*</b></span></label><br />
+                    </div><br />
+
+                    <div class="form-floating">
+                        {{ form.description}}
+                        <label for="floatingName">Product Description<span style="color:red"><b>*</b></span></label><br />
+                    </div><br />
+
+                    <div class="form-floating">
+                        {{ form.image }}
+                        <label for="floatingName">Category Image<span style="color:red"><b>*</b></span></label><br />
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% for product in product_list %}
+<form method="POST" action="{% url 'product_edit' product.id %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="edit{{ forloop.counter }}" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control" name="name" value="{{ product.name }}" required="required">
+                        <label for="floatingName">Product Name<span style="color:red"><b>*</b></span></label><br />
+                    </div>
+
+                    <div class="form-floating ">
+                        <select class="form-control" name="category" required="required">
+                            {% for category in category_list %}
+                                <option {% if category.id == product.category.id %} selected="selected" {% endif %} value="{{category.id}}">{{category.title|upper}}</option>
+                            {% endfor %}
+                        </select>
+                        <label for="floatingName">Product Category<span style="color:red"><b>*</b></span></label><br />
+                    </div>
+
+                    <div class="form-floating ">
+                        <textarea class="form-control" name="description" required="required">{{product.description}}</textarea>
+                        <label for="floatingName">Product Description <span style="color:red"><b>*</b></span></label><br />
+                    </div><br />
+
+                    <div class="form-floating ">
+                        <input type="file" class="form-control" name="image" value="/media/{{ product.image }}" required="required">
+                        <label for="floatingName">Product Image<span style="color:red"><b>*</b></span></label><br />
+                    </div>
+
+                        <br />
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endfor %}
+
+
+{% endblock %}

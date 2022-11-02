@@ -1,0 +1,31 @@
+{% extends 'site_admin/layout.html' %}
+{% block 'page' %} User {% endblock %}
+{% block 'subpage' %} Bulk Mail {% endblock %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<section>
+    <form action="{% url 'admin_user_action' %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body" style="background:white">
+                        <h5 class="card-title">Enter Message. Message will be sent to {{ users }} selected user{{ users|pluralize }}</h5>
+                        <input type="text" required="required" name="subject" class="form-control" placeholder="Enter Mail Subject....."> <br />
+                        <textarea class="tinymce-editor" style="background:white;height:200px" name="message"></textarea>
+                        {% for a_user in user_list %}
+                            <input type="hidden" name="user_list[]" value="{{ a_user }}">
+                        {% endfor %}
+                        <input type="hidden" name="action" value="message">
+                        <br />
+                        <input type="submit" value="Proceed" class="btn btn-primary" >
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</section>
+{%endblock %}
+

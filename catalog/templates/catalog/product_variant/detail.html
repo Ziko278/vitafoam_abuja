@@ -1,0 +1,61 @@
+{% extends 'site_admin/layout.html' %}
+{% block 'page' %} Product {% endblock %}
+{% block 'subpage' %} Detail {% endblock %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+
+            <div class="card-body pt-3">
+                <ul class="nav nav-tabs nav-tabs-bordered">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">PRODUCT DETAILS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" data-bs-target="#result">ORDERS</a>
+                    </li>
+
+                </ul>
+
+                <div class="tab-content pt-2">
+                    <div class="tab-pane fade show active profile-overview" id="profile-overview">
+
+                        <div class="col-12 grid-margin">
+                            <div class="card">
+                                <div class="card-body" style="padding:20px">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="card-title"> {{variant.product.name|upper}} </p>
+                                            <p class="card-description"> <i>Size:</i> {{variant.size|upper}} </p>
+                                            <p class="card-description"><i>Price:</i> N{{variant.price|floatformat|intcomma}} </p>
+                                            <p class="card-description"> <i>Category:</i> {{variant.product.category.title|upper}} </p>
+                                            <p class="card-description"><i>Description:</i> {{variant.product.description|capfirst}} </p>
+
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <p class="card-title">{% if variant.main_view %} <img src="/media/{{variant.main_view}}" style="height:200px" /> {% else %}<img src="/media/{{variant.product.image}}" style="height:200px" />{% endif %} </p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade pt-3" id="result">
+                        <div class="col-12">
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

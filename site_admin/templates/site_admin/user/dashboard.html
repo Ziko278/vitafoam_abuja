@@ -1,0 +1,201 @@
+{% extends 'site_admin/layout.html' %}
+{% block 'page' %} User {% endblock %}
+{% block 'subpage' %} Dashboard {% endblock %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="row">
+      <div class="col-xxl-4 col-md-4">
+        <div class="card info-card sales-card">
+
+          <div class="card-body">
+            <h5 class="card-title">Users <span>| Total</span></h5>
+            <div class="d-flex align-items-center">
+
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-people"></i>
+                </div>
+
+
+                <div class="ps-3">
+                  <h6>{{ all_users|intcomma }}</h6>
+                  <span class="text-muted small pt-2 ps-1">Total Users</span>
+                </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xxl-4 col-md-4">
+        <div class="card info-card revenue-card">
+
+          <div class="card-body">
+            <h5 class="card-title">Users <span>| Active</span></h5>
+            <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-emoji-sunglasses"></i>
+                  </div>
+
+                <div class="ps-3">
+                  <h6>{{ active_users|intcomma }}</h6>
+                  <span class="text-muted small pt-2 ps-1">Active Users</span>
+                </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xxl-4 col-md-4">
+        <div class="card info-card revenue-card">
+
+          <div class="card-body">
+            <h5 class="card-title">Users <span>| Inactive</span></h5>
+            <div class="d-flex align-items-center">
+
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-emoji-neutral"></i>
+                  </div>
+
+                <div class="ps-3">
+                  <h6>{{ inactive_users|intcomma }}</h6>
+                  <span class="text-muted small pt-2 ps-1">Inactive Users</span>
+                </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xxl-4 col-md-4">
+        <div class="card info-card customers-card">
+
+          <div class="card-body">
+            <h5 class="card-title">Users <span>| New</span></h5>
+            <div class="d-flex align-items-center">
+
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-emoji-smile"></i>
+                </div>
+
+                <div class="ps-3">
+                  <h6>{{ new_users|intcomma }}</h6>
+                  <span class="text-muted small pt-2 ps-1">New Users ({% now 'M' %})</span>
+                </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xxl-4 col-md-4">
+        <div class="card info-card customers-card">
+
+          <div class="card-body">
+            <h5 class="card-title">Users<span> | Increase</span></h5>
+            <div class="d-flex align-items-center">
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-people"></i>
+                  </div>
+
+                <div class="ps-3">
+                  <h6> {{ users_increase }} %</h6>
+                  <span class="text-muted small pt-2 ps-1">Percentage rise ({% now 'M' %})</span>
+                </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xxl-4 col-md-4">
+        <div class="card info-card customers-card">
+
+          <div class="card-body">
+            <h5 class="card-title">Users <span>| Transaction %</span></h5>
+            <div class="d-flex align-items-center">
+
+                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                  <i class="bi bi-currency-exchange"></i>
+                </div>
+
+                <div class="ps-3">
+                  <h6>{{ transacting_per_users }}</h6>
+                  <span class="text-muted small pt-2 ps-1">Transaction Per User</span>
+                </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<section class="section">
+      <div class="row">
+
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">USER REGISTRATION DISTRIBUTION BY MONTH ({% now 'Y' %}) </h5>
+
+              <!-- Line Chart -->
+              <div id="lineChart"></div>
+
+              <script>
+                document.addEventListener("DOMContentLoaded", () => {
+                  new ApexCharts(document.querySelector("#lineChart"), {
+                    series: [{
+                      name: "Users",
+                      data: {{ month_users }}
+                    }],
+                    chart: {
+                      height: 350,
+                      type: 'line',
+                      zoom: {
+                        enabled: false
+                      }
+                    },
+                    dataLabels: {
+                      enabled: false
+                    },
+                    stroke: {
+                      curve: 'straight'
+                    },
+                    grid: {
+                      row: {
+                        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                        opacity: 0.5
+                      },
+                    },
+                    xaxis: {
+                      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    }
+                  }).render();
+                });
+              </script>
+              <!-- End Line Chart -->
+
+            </div>
+          </div>
+        </div>
+      </div>
+</section>
+<script src="{% static 'scripts/jquery.js' %}"></script>
+<script>
+    $(document).ready(function(){
+        $( '#check-all' ).click( function () {
+
+            $( '.user-check-list' ).prop('checked', this.checked)
+        })
+    })
+</script>
+{%endblock %}
+

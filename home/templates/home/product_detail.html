@@ -1,0 +1,171 @@
+{% extends 'home/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+ <!-- Shop Details Section Begin -->
+    <section class="shop-details">
+        <div class="product__details__pic" style="padding:15px">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="product__details__breadcrumb">
+                            <a href="{% url 'home' %}">Home</a>
+                            <a href="{% url 'shop' 'all' %}">Shop</a>
+                            <span>Product Details</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3" style="height:70px;margin-top:-20px;margin-bottom:10px">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#tabs-1" role="tab">
+                                    <div class="product__thumb__pic set-bg"
+                                         data-setbg="/media/{{variant.product.image}}"  style="height:65px">
+                                    </div>
+                                </a>
+                            </li>
+                            {% if variant.main_view %}
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab>
+                                    <div  class="product__thumb__pic set-bg" data-setbg="/media/{{variant.main_view}}" style="height:65px">
+                                    </div>
+                                </a>
+                            </li>
+                            {% endif %}
+
+                            {% if variant.side_view %}
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">
+                                    <div class="product__thumb__pic set-bg" data-setbg="/media/{{variant.side_view}}" style="height:65px">
+                                    </div>
+                                </a>
+                            </li>
+                            {% endif %}
+
+                            {% if variant.top_view %}
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tabs-4" role="tab">
+                                    <div class="product__thumb__pic set-bg" data-setbg="/media/{{variant.top_view}}" style="height:65px">
+                                    </div>
+                                </a>
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <div class="col-lg-6 col-md-9">
+                        <div class="tab-content" style="">
+                            <div class="tab-pane active" id="tabs-1" role="tabpanel">
+                                <div class="product__details__pic__item">
+                                    <img src="/media/{{variant.product.image}}" alt="" style="height:200px;width:100%">
+                                </div>
+                            </div>
+                            {% if variant.main_view %}
+                            <div class="tab-pane" id="tabs-2" role="tabpanel">
+                                <div class="product__details__pic__item">
+                                    <img src="/media/{{variant.main_view}}" alt="">
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% if variant.side_view %}
+                            <div class="tab-pane" id="tabs-3" role="tabpanel">
+                                <div class="product__details__pic__item">
+                                    <img src="/media/{{variant.side_view}}" alt="">
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% if variant.top_view %}
+                            <div class="tab-pane" id="tabs-4" role="tabpanel">
+                                <div class="product__details__pic__item">
+                                    <img src="/media/{{variant.top_view}}" alt="">
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="product__details__content">
+            <div class="container">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="product__details__text" style="margin-top:-70px">
+                            <h4>{{ variant.product.name|title }} {% if variant.size %} - {{ variant.size|upper }} {% endif %}</h4>
+
+                            <h3>N{{ variant.price|floatformat|intcomma }}</h3>
+                            <p>{{ variant.product.description }}</p>
+
+                            <div class="product__details__cart__option">
+                                <a class="primary-btn add-cart" style="color:white" price="{{variant.price|floatformat}}" pk="{{variant.id}}">{% if not variant.id in request.session.cart %} + Add To Cart {% else %} Remove From Cart {% endif %}</a>
+                            </div>
+							
+							<div style="width:200px;margin:auto">
+                                <select onchange="location=this.value;" class="product__details__cart__option form-control" style="margin-left:50px;border:2px solid black">
+									<option value=""><b>SELECT DIFFERENT SIZE</b> </option>
+									{% for other_variant in variant.other_sizes %}
+										{% if other_variant.size %}<option value="{% url 'shop-detail' other_variant.id %}">{{ other_variant.size|upper }} (N{{ other_variant.price|floatformat|intcomma }}) {% endif %}
+									{% endfor %}
+								</select>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- Shop Details Section End -->
+
+    <!-- Related Section Begin -->
+    <section class="related spad" style="margin-top:-80px">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class="related-title">Related Products</h3>
+                </div>
+            </div>
+            <div class="row">
+                {% for product in variant.related_products %}
+					{% if product.has_variant %}
+								<div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix {{product.category.title}}">
+									<div class="product__item">
+										<a href="{% url 'shop-detail' product.first_variant.id %}">
+											<div class="product__item__pic set-bg" data-setbg="/media/{{product.image}}" style="height:200px">
+											</div>
+										</a>
+
+										<div class="product__item__text">
+											<h6>{{product.name|capfirst}}</h6>
+											<a class="add-cart" price="{{product.start_price|floatformat}}" pk="{{product.first_variant.id}}" status="o">{% if not product.first_variant.id in request.session.cart %} + Add To Cart {% else %} Remove From Cart {% endif %}</a>
+
+											<h5>{% if product.start_price == product.end_price %} N{{ product.end_price|floatformat|intcomma }} {% else %}  N{{ product.start_price|floatformat|intcomma }} -  N{{ product.end_price|floatformat|intcomma }} {% endif %}</h5>
+												
+										</div>
+									</div>
+									<div style="margin-top:-15px;">
+										{% if product.has_many_variant %}
+										<select onchange="location=this.value;" style="width:350px;position:relative;top:-100px" >
+											<option value=''>------ SELECT SIZE -----</option>
+
+											{% for variant in product.all_variants %}
+												<option value="{% url 'shop-detail' variant.id %}">{{variant.size|upper }} - N{{ variant.price|floatformat|intcomma }} </option>
+											{% endfor %}
+										</select>
+										<br />
+								
+										{% endif %}
+									</div>
+								</div>
+								
+							{% endif %}
+                {% endfor %}
+
+            </div>
+        </div>
+    </section>
+    <!-- Related Section End -->
+{%endblock %}

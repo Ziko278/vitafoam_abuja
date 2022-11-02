@@ -1,0 +1,121 @@
+{% extends 'home/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+
+    <!-- Breadcrumb Section Begin -->
+    <section class="breadcrumb-option" style="padding:10px">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__text">
+                        <h4>Shop</h4>
+                        <div class="breadcrumb__links">
+                            <a href="{% url 'home' %}">Home</a>
+                            <span>Shop</span> - 
+							<span>{{ filter|capfirst }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Breadcrumb Section End -->
+
+    <!-- Shop Section Begin -->
+    <section class="shop spad" style="padding-top:30px">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="shop__sidebar">
+                        <div class="shop__sidebar__search">
+                            <form action="{% url 'pre-search' %}">
+                                <input type="text" name="search" autocomplete="off" placeholder="Search...">
+                                <button type="submit"><i class="fa fa-search"></i></button>
+                            </form>
+                        </div>
+                        <div class="shop__sidebar__accordion">
+                            <div class="accordion" id="accordionExample">
+                                <div class="card">
+                                    <div class="card-heading">
+                                        <a data-toggle="collapse" data-target="#collapseOne">Categories</a>
+                                    </div>
+                                    <div id="collapseOne" class="collapse" data-parent="#accordionExample">
+                                        <div class="card-body">
+                                            <div class="shop__sidebar__categories">
+                                                <ul class="nice-scroll">
+                                                    <li><a href="{% url 'shop' 'all' %}">All </a></li>
+                                                    {% for category in category_list %}
+                                                    <li><a href="{% url 'shop' category.title %}">{{ category.title|capfirst}} ({{category.no_of_product}})</a></li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9">
+
+                    <div class="row">
+                    {% for product in product_list %}
+					{% if product.has_variant %}
+						<div class="col-lg-3 col-md-6 col-sm-6 col-md-6 col-sm-6 mix {{product.category.title}}">
+							<div class="product__item">
+								<a href="{% url 'shop-detail' product.first_variant.id %}">
+									<div class="product__item__pic set-bg" data-setbg="/media/{{product.image}}" style="height:200px">
+									</div>
+								</a>
+
+								<div class="product__item__text">
+									<h6>{{product.name|capfirst}}</h6>
+									<a class="add-cart" price="{{product.start_price|floatformat}}" pk="{{product.first_variant.id}}" status="o">{% if not product.first_variant.id in request.session.cart %} + Add To Cart {% else %} Remove From Cart {% endif %}</a>
+
+									<h5>{% if product.start_price == product.end_price %} N{{ product.end_price|floatformat|intcomma }} {% else %}  N{{ product.start_price|floatformat|intcomma }} -  N{{ product.end_price|floatformat|intcomma }} {% endif %}</h5>
+										
+								</div>
+							</div>
+							<div style="margin-top:-15px;">
+								{% if product.has_many_variant %}
+								<select onchange="location=this.value;" style="width:350px;position:relative;top:-100px" >
+									<option value=''>------ SELECT SIZE -----</option>
+
+									{% for variant in product.all_variants %}
+										<option value="{% url 'shop-detail' variant.id %}">{{variant.size|upper }} - N{{ variant.price|floatformat|intcomma }} </option>
+									{% endfor %}
+								</select>
+								<br />
+						
+								{% endif %}
+							</div>
+						</div>
+						
+					{% endif %}
+                {% endfor %}
+                    </div>
+                    <div class="text-center" style="background:grey;padding-bottom:10px"><br />
+                        <span class="step-links"><b>
+                            {% if page_obj.has_previous %}
+                                <a href = "?page=1">&laquo; first</a>
+                                <a href="?page={{ page_obj.previous_page_number }} "> previous </a>
+                            {% endif %}
+
+                            <span class="current">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+                            {% if page_obj.has_next %}
+                                <a href = "?page={{ page_obj.next_page_number }} " style="margin:10px">next</a>
+                                <a href="?page={{ page_obj.paginator.num_pages }} "> last &raquo; </a>
+                            {% endif %}
+                        </b></span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Shop Section End -->
+
+{%endblock %}

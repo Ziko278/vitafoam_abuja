@@ -1,0 +1,108 @@
+{% extends 'site_admin/layout.html' %}
+{% block 'page' %} Catalog {% endblock %}
+{% block 'subpage' %} Product Size{% endblock %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<div class="col-12">
+    <div class="card recent-sales overflow-auto">
+        <div class="filter">
+            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li class="dropdown-header text-start">
+                    <h6>Action</h6>
+                </li>
+
+                <li><a class="dropdown-item" href="#">
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#verticalycentered">Add Size</button>
+                </a></li>
+            </ul>
+        </div>
+
+        <div class="card-body">
+            <h5 class="card-title">Product Sizes</h5>
+            <table class="table table-borderless datatable">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Size</th>
+                    <th scope="col" class="text-center">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if product_size_list %}
+                {% for size in product_size_list %}
+                <tr>
+                    <th scope="row"><a href="#">{{ forloop.counter }}</a></th>
+                    <td style="padding-left:20px">{{ size.size|upper}}</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit{{ forloop.counter }}">Edit</button>
+                        <a href="{% url 'size_delete' size.id %}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                    <tr><td colspan="10"><h3 class="text-center">No Available Size</h3></td></tr>
+                {% endif %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<form method="POST" action="{% url 'size_create' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="verticalycentered" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Size</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating">
+                        {{ form.size }}
+                        <label for="floatingName">Product Size<span style="color:red"><b>*</b></span></label><br />
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+{% for size in product_size_list %}
+<form method="POST" action="{% url 'size_edit' size.id %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="modal fade" id="edit{{ forloop.counter }}" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Product Size</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating ">
+                        <input type="text" class="form-control" name="size" value="{{ size.size }}" required="required">
+                        <label for="floatingName">Product Size<span style="color:red"><b>*</b></span></label><br />
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endfor %}
+
+
+{% endblock %}

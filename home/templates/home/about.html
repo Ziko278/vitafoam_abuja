@@ -1,0 +1,64 @@
+{% extends 'home/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+ <!-- About Section Begin -->
+    <section class="about spad" style="padding-top:30px">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="about__pic">
+                        <img src="{% static 'home/images/banner/banner-1.jpg' %}" alt="" style="height:300px">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div class="about__item">
+                        <h4>Who We Are ?</h4>
+                        <p>We are the number one supplier of vitafoam products in abuja and beyond. We supply quality products, and at very affordable prices.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div class="about__item">
+                        <h4>What Do We Do?</h4>
+                        <p>We sell and deliver quality mattress to clients within and beyond Abuja. We also supply bedroom accessories.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div class="about__item">
+                        <h4>Why Choose Us?</h4>
+                        <p>With several years in the business and thousands of clients attended to, you are rest assured of good value for your money.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- About Section End -->
+
+    <!-- Testimonial Section Begin -->
+    <section class="testimonial">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-6 p-0">
+                    <div class="testimonial__text">
+                        <span class="icon_quotations"></span>
+                        <p>“I got the exact product I ordered for. The mattress was delivered very promptly too. Great service.”
+                        </p>
+
+                    </div>
+                </div>
+                <div class="col-lg-6 p-0">
+                    <div class="testimonial__text">
+                        <span class="icon_quotations"></span>
+                        <p>“The attendant gave me advice on the best mattress for my weight, i tried them and i wasn't disappointed. Thank you so much.”
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Testimonial Section End -->
+
+
+{%endblock %}

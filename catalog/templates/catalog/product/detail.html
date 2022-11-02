@@ -1,0 +1,205 @@
+{% extends 'site_admin/layout.html' %}
+{% block 'page' %} Product {% endblock %}
+{% block 'subpage' %} Detail {% endblock %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+
+            <div class="card-body pt-3">
+                <ul class="nav nav-tabs nav-tabs-bordered">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">PRODUCT DETAILS</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" data-bs-target="#result">VARIANTS</a>
+                    </li>
+
+                </ul>
+
+                <div class="tab-content pt-2">
+                    <div class="tab-pane fade show active profile-overview" id="profile-overview">
+
+                        <div class="col-12 grid-margin">
+                            <div class="card">
+                                <div class="card-body" style="padding:20px">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="card-title"> {{product.name|upper}} </p>
+                                            <p class="card-description"> <i>Category:</i> {{product.category.title|upper}} </p>
+                                            <p class="card-description"><i>Description:</i> {{product.description|capfirst}} </p>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <p class="card-title"> <img src="/media/{{product.image}}" style="height:200px" /></p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade pt-3" id="result">
+                        <div class="col-12">
+                            <div class="card recent-sales overflow-auto">
+                                <div class="filter">
+                                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                                        <li class="dropdown-header text-start">
+                                            <h6>Action</h6>
+                                        </li>
+
+                                        <li><a class="dropdown-item" href="#">
+                                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#verticalycentered">Add Variant</button>
+                                        </a></li>
+                                    </ul>
+                                </div>
+
+                                <div class="card-body">
+                                    <h5 class="card-title">Variants of {{product.name|capfirst}}</h5>
+                                    <table class="table table-borderless datatable">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Size</th>
+                                            <th scope="col">Price(N)</th>
+                                            <th scope="col" class="text-center">Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% if product.variant.all %}
+                                        {% for variant in product.variant.all %}
+                                        <tr>
+                                            <th scope="row"><a href="#">{{ forloop.counter }}</a></th>
+                                            <td style="padding-left:20px">{{ variant.size|upper }}</td>
+                                            <td style="padding-left:20px">{{ variant.price|floatformat|intcomma}}</td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#edit{{ forloop.counter }}">Edit</button>
+                                                <a href="{% url 'variant_detail' variant.id %}" class="btn btn-success">Detail</a>
+                                                <a href="{% url 'variant_delete' variant.id %}" class="btn btn-danger">Delete</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% else %}
+                                            <tr><td colspan="10"><h3 class="text-center">No Variant of {{product.name|capfirst}}</h3></td></tr>
+                                        {% endif %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <form method="POST" action="{% url 'variant_create' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="modal fade" id="verticalycentered" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Add {{product.name|capfirst}} Variant</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-floating">
+                                                {{ form.size}}
+                                                <input type="hidden" name="product" value="{{product.id}}">
+                                                <label for="floatingName">Product Size<span style="color:red"><b>*</b></span></label><br />
+                                            </div>
+
+                                            <div class="form-floating">
+                                                {{ form.price}}
+                                                <label for="floatingName">Product Price<span style="color:red"><b>*</b></span></label><br />
+                                            </div><br />
+
+                                            <div class="form-floating">
+                                                {{ form.main_view}}
+                                                <label for="floatingName">Main View Image</label><br />
+                                            </div><br />
+
+                                            <div class="form-floating">
+                                                {{ form.side_view }}
+                                                <label for="floatingName">Side View Image</label><br />
+                                            </div>
+
+                                            <div class="form-floating">
+                                                {{ form.top_view }}
+                                                <label for="floatingName">Top View Image</label><br />
+                                            </div>
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        {% for variant in product.variant.all %}
+                        <form method="POST" action="{% url 'variant_edit' variant.id %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="modal fade" id="edit{{ forloop.counter }}" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Edit {{variant.size|upper}} {{product.name|title}}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="form-floating ">
+                                                <input type="hidden" name="product" value="{{product.id}}">
+                                                <select class="form-control" name="size" required="required">
+                                                    {% for size in size_list %}
+                                                        <option {% if size.id == variant.size.id %} selected="selected" {% endif %} value="{{size.id}}">{{size}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                                 <label for="floatingName">Product Size<span style="color:red"><b>*</b></span></label><br />
+                                            </div>
+
+                                            <div class="form-floating ">
+                                                <input type="text" class="form-control" name="price" value="{{ variant.price|floatformat }}" required="required">
+                                                <label for="floatingName">Product Price <span style="color:red"><b>*</b></span></label><br />
+                                            </div><br />
+
+                                            <div class="form-floating ">
+                                                <input type="file" class="form-control" name="main_view" value="/media/{{ variant.main_view }}">
+                                                <label for="floatingName">Main View Image</label><br />
+                                            </div><br />
+
+                                            <div class="form-floating ">
+                                                <input type="file" class="form-control" name="side_view" value="/media/{{ variant.side_view }}">
+                                                <label for="floatingName">Size View Image</label><br />
+                                            </div><br />
+
+                                            <div class="form-floating ">
+                                                <input type="file" class="form-control" name="top_view" value="/media/{{ variant.top_view }}">
+                                                <label for="floatingName">Top View Image</label><br />
+                                            </div><br />
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                        {% endfor %}
+
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+{% endblock %}

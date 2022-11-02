@@ -1,0 +1,108 @@
+{% extends 'site_admin/layout.html' %}
+{% block 'page' %} User {% endblock %}
+{% block 'subpage' %} Index {% endblock %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<form action="{% url 'admin_user_action' %}">
+    <div class="col-12">
+        <div class="card recent-sales overflow-auto">
+
+            <div class="card-body">
+                <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                        <li class="dropdown-header text-start">
+                            <h6>Filter</h6>
+                        </li>
+
+                        <li><a class="dropdown-item" href="{% url 'admin_user_list' 'all' %}">All User</a></li>
+                        <li><a class="dropdown-item" href="{% url 'admin_user_list' 'active' %}">Active</a></li>
+                        <li><a class="dropdown-item" href="{% url 'admin_user_list' 'inactive' %}">Inactive</a></li>
+                        <li><a class="dropdown-item" href="{% url 'admin_user_list' 'new' %}">New</a></li>
+
+                    </ul>
+                </div>
+
+                <h5 class="card-title">{{ filter|capfirst }} Users List</h5>
+                <table class="table table-borderless datatable">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Fullname</th>
+                        <th scope="col" class="">Reputation</th>
+                        <th scope="col" class="">Wallet (N)</th>
+                        <th scope="col" class="">Registration Date</th>
+                        <th scope="col" class="text-center">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if user_list %}
+                    {% for a_user in user_list %}
+
+                        <tr>
+                            <th scope="row"><input class="form-check-input user-check-list" type="checkbox" name="user_list[]" value="{{ a_user.id }}"></th>
+                            <th scope="row"><img class="rounded-circle" style="width:50px" {% if a_user.profile.profile_image %} src="/media/{{ a_user.profile.profile_image }}" {% else %} src="{% static 'account/images/default_image.jpg' %}" {% endif %} /> </th>
+                            <td>{{ a_user.username }} </td>
+                            <td>{% if a_user.profile.full_name %} {{ a_user.profile.full_name }} {% endif %} </td>
+                            <td>
+                                <span style="margin-right:10px"><i class="bi bi-circle-fill" style="color:grey;"></i> <b>{{ a_user.user_wallet.reputation|floatformat}}</b></span>
+                                <span><i class="bi bi-star-fill" style="color:gold"></i> <b style="margin-right:30px">{{ a_user.user_wallet.star }}</b></span>
+                                {% if a_user.profile.is_premium_user %} <span><i class="bi bi-diamond-fill" style="color:gold;"></i></span> {% endif %}
+                            </td>
+                            <td> <b>{{ a_user.user_wallet.balance|intcomma}}</b></td>
+                            <td> {{ a_user.date_joined|date}}</td>
+                            <td class="text-center"><a class="btn btn-primary" href="{% url 'admin_user_detail' a_user.id %}">View</a></td>
+                        </tr>
+
+                    {% endfor %}
+                    {% else %}
+                        <tr><td colspan="8"><h3 class="text-center">No Available User </h3></td></tr>
+                    {% endif %}
+
+                    </tbody>
+                </table>
+
+                <div class="row">
+                    <div class="col-md-2">
+                        <span class="card-title" style="margin-right:5px">Check all </span><input id="check-all" class="form-check-input" type="checkbox" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <span class="card-title" style="margin-left:70px">With Selected:</span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <select class="form-control" required name="action">
+                            <option value="">-----------</option>
+                            <option value="delete">Delete</option>
+                            <option value="message">Send Mail</option>
+                            <option value="ban_account">Ban Account</option>
+                            <option value="activate_account">Activate Account</option>
+
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <button class="btn btn-success">Proceed</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="{% static 'scripts/jquery.js' %}"></script>
+<script>
+    $(document).ready(function(){
+        $( '#check-all' ).click( function () {
+
+            $( '.user-check-list' ).prop('checked', this.checked)
+        })
+    })
+</script>
+{%endblock %}
+

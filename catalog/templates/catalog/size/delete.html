@@ -1,0 +1,26 @@
+{% extends 'site_admin/layout.html' %}
+{% block 'page' %} Product Size{% endblock %}
+{% block 'subpage' %} Delete {% endblock %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+
+<div class="page-header">
+    <h3 class="page-title"> PRODUCT SIZE: <i>{{product_size.size|upper}} </i> </h3>
+</div>
+
+<div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title">Are you sure you want to delete <i>"{{product_size.size|upper}}"</i> as a product size?</h4>
+            <p>Action cannot be reversed</p>
+            <form style="display:inline" method="post">
+                {% csrf_token %}
+                <button class="btn btn-success">Proceed</button>
+            </form>
+            <a class="btn btn-danger" href="{% url 'size_index' %}"> Cancel</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

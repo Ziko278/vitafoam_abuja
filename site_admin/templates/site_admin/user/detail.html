@@ -1,0 +1,199 @@
+{% extends 'site_admin/layout.html' %}
+{% block 'page' %} User {% endblock %}
+{% block 'subpage' %} Detail {% endblock %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="filter">
+                <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li class="dropdown-header text-start">
+                        <h6>Action</h6>
+                    </li>
+
+                    <li><a class="dropdown-item" href="% url 'student_edit' student.id %}">Message User</a></li>
+                    <li><a class="dropdown-item" href="#">Block User</a></li>
+                </ul>
+            </div>
+            <div class="card-body pt-3">
+                <ul class="nav nav-tabs nav-tabs-bordered">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview">BIO DATA</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" data-bs-target="#result">TRANSACTIONS</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit">FUNDING</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-settings">WITHDRAWAL</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-change-password">STATISTICS</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content pt-2">
+                    <div class="tab-pane fade show active profile-overview" id="profile-overview">
+
+                        <div class="col-12 grid-margin">
+                            <div class="card">
+                                <div class="card-body" style="padding:20px">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="card-title"> USER INFORMATION </p>
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <image {% if client.profile.profile_image %} src="/media/{{ client.profile.profile_image }}" {% else %} src="{% static 'images/default_image.jpg' %}" {% endif %} style="width:100px;height:100px;border-radius:5px;" />
+                                                    <p style="margin-top:5px;" class="text-center">
+                                                        {% if client.is_active %}
+                                                            <span class="text-center text-success"> Active </span>
+                                                        {% else %}
+                                                            <span class="text-center text-danger"> Inactive </span>
+                                                        {% endif %}
+                                                    </p>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <p>@{{ client.username }}</p>
+                                                    <p>{{ client.email|lower }}</p>
+                                                    <p>{% if client.profile.full_name %} {{ client.profile.full_name }} {% endif %} </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="card-title"> ACCOUNT INFORMATION </p>
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <p><p><h1><del style="text-decoration-style:double;color:green">N</del> {{ client.user_wallet.balance|intcomma }}</h1></p></p>
+                                                    <p>
+                                                        <span style="margin-right:10px"><i class="bi bi-circle-fill" style="color:grey;"></i> <b>{{ client.user_wallet.reputation|floatformat}}</b></span>
+                                                        <span><i class="bi bi-star-fill" style="color:gold"></i> <b style="margin-right:30px">{{ client.user_wallet.star }}</b></span>
+                                                    </p>
+                                                    <p>
+                                                        {% if not client.profile.is_premium_user %}
+                                                            <span>Basic Account</span>
+                                                        {% else %}
+                                                            <span><i class="bi bi-diamond-fill" style="color:gold;"></i> Premium Account till {{ client.profile.premium_end_date }} </span>
+                                                        {% endif %}
+                                                    </p>
+                                               </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-body" style="padding:20px">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="card-title"> OTHER INFORMATION </p>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <p><label class="label_info"><b>Full Name:</b></label> {% if client.profile.full_name %} {{ client.profile.full_name }} {% else %} --------------- {% endif %}</p>
+                                                    <p><label class="label_info"><b>Mobile:</b></label> {% if client.profile.phone_number %} {{ client.profile.phone_number }} {% else %} --------------- {% endif %}</p>
+                                                    <p><label class="label_info"><b>Address:</b></label> {% if client.profile.address %} {{ client.profile.address }} {% else %} --------------- {% endif %}</p>
+                                                    <p>
+                                                        {% if client.profile.facebook_link %} <a href="{{ client.profile.facebook_link }}"><i class="bi bi-facebook" style="font-size:20px;margin-right:20px"></i> </a>{% endif %}
+                                                        {% if client.profile.twitter_link %} <a href="{{ client.profile.twitter_link }}"><i class="bi bi-twitter" style="font-size:20px"></i> </a>{% endif %}
+
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="card-title"> ABOUT USER</p>
+                                            <div class="row">
+
+                                                <div class="col-md-12">
+                                                    {% if client.profile.about %} {{ client.profile.about }} {% else %} ***** No About ***** {% endif %}
+                                                    {% if client.profile.tag.all %}
+                                                        <br />
+                                                        <p style="margin-top:10px">{{ user }} is interested in {% for tag in client.profile.tag.all %} <b>#{{tag}}</b> {% endfor %} </p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade pt-3" id="result">
+                        <div class="col-12">
+                            <div class="card recent-sales overflow-auto">
+
+                                <div class="card-body">
+                                    <h5 class="card-title">Recent Transactions of @{{ client }} </h5>
+                                    <table class="table table-borderless datatable">
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">Client</th>
+                                            <th scope="col">Subject</th>
+                                            <th scope="col" class="">Amount</th>
+                                            <th scope="col" class="">Status</th>
+                                            <th scope="col" class="">Date</th>
+                                            <th scope="col" class="text-center">Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% if recent_transactions %}
+                                        {% for transaction in recent_transactions %}
+
+                                            <tr>
+                                                <td>{% if transaction.client == client %} <a href="{% url 'admin_user_detail' transaction.user.id %}"> @{{ transaction.user }} </a> {% elif transaction.user == client %} {% if transaction.client %} <a href="{% url 'admin_user_detail' transaction.client.id %}"> @{{ transaction.client }} </a> {% else %} ---------- {% endif %} {% endif %} </td>
+
+                                                <td>{{ transaction.title|truncatechars:30 }} </td>
+                                                <td> {{ transaction.proposed_fee|floatformat|intcomma}}</b></td>
+                                                <td> <b>{{ transaction.status}}</b></td>
+                                                <td> {{ transaction.created_at|date}}</td>
+                                                <td class="text-center"><a class="btn btn-primary" href="{% url 'admin_transaction_detail' transaction.id %}">View</a></td>
+                                            </tr>
+
+                                        {% endfor %}
+                                        {% else %}
+                                            <tr><td colspan="8"><h3 class="text-center">No Transaction Made Yet</h3></td></tr>
+                                        {% endif %}
+
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+                        <h5 class="card-title">Student Details</h5>
+
+                    </div>
+
+                    <div class="tab-pane fade pt-3" id="profile-settings">
+                        <h5 class="card-title">Assign Teacher(s) to {{ subject.name|title }}</h5>
+                        <div class="row">
+
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade pt-3" id="profile-change-password">
+                        <h5 class="card-title">Student Wellfare</h5>
+                        <div class="row">
+                            <button class="btn btn-primary">Register Student</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{%endblock %}
+

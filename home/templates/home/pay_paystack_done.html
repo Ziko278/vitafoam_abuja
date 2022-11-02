@@ -1,0 +1,33 @@
+{% extends 'home/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<section id="featured-services" class="featured-services" style="padding-top:20px;border-top:2px solid grey">
+    <div class="container">
+        <div class="row gy-4">
+
+            <div class="col-lg-12 col-md-12 service-item d-flex" data-aos="fade-up" data-aos-delay="100">
+                <div class="icon flex-shrink-0"><i class="fa-solid fa-wallet"></i></div>
+                <div>
+
+                    <h4 class="title" style="font-family:courier;margin-bottom:20px">Payment with Paystack </h4>
+
+                    {% if status %}
+                        {% if status == "success"  %}
+                            <h4 class="text-success" style="font-family:courier"><b> <i class="fa-solid fa-check text-success"></i>Payment of N{{ amount|intcomma }} was successful </b></h4>
+                        {% elif status == "pending" %}
+                            <h4 class="text-warning" style="font-family:courier"><b>An Error Occurred During Payment Process, Transaction Pending </b></h4>
+                        {% endif %}
+                    {% else %}
+                        <h4 class="text-danger" style="font-family:courier"><b>An Error Occurred During Payment Process </b></h4>
+                    {% endif %}
+					<br />
+                    <a href="{% url 'home' %}" style="margin-bottom:20px" class="btn btn-outline-primary">Return Home</a>
+                </div>
+            </div><!-- End Service Item -->
+
+
+        </div>
+    </div>
+</section>
+{%endblock %}

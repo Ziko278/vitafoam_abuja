@@ -1,0 +1,50 @@
+{% extends 'home/mail/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<hr /><br />
+
+<div class="" style="background:white">
+
+	<h4 class="" style="font-family:courier;text-align:center;font-size:25px;margin-top:-15px"><b>Order Details</b></h4>
+	
+	<p style="font-family:courier;font-size:20px;margin-top:-15px"> An order worth N{{ checkout.order.amount|floatformat|intcomma }} was placed at {{ checkout.created_at }}</p>
+	<p style="font-family:courier;font-size:20px;margin-top:-15px">Full Name: <b>{{ checkout.full_name|title }}</b></p>
+	<p style="font-family:courier;font-size:20px;margin-top:-15px">Mobile: <b>{{ checkout.mobile }}</b></p>
+	<p style="font-family:courier;font-size:20px;margin-top:-15px">Address: <b>{{ checkout.address }}</b></p>
+	<p style="font-family:courier;font-size:20px;margin-top:-15px">Email: <b>{% if checkout.email %} {{ checkout.email }} {% endif %}</b></p>
+	<p style="font-family:courier;font-size:20px;margin-top:-15px">Payment Method: <b>{{ checkout.payment_method|upper }}</b> </p>
+
+	<table style="border:1px solid grey;width:100%;font-family:courier">
+		<thead>
+			<tr style="border:1px solid black;height:30px">
+				<td style="width:5%"><b>#</b></td>
+				<td style="width:50%"><b>Item</b></td>
+				<td style="width:15%"><b>Qty</b></td>
+				<td style="width:30%"><b>Price (N)</b></td>
+			</tr>
+		</thead>
+		
+		<tbody>
+			{% for variant in checkout.order.products.all %}
+			<tr style="border:1px solid black;height:30px">
+				<td style="width:5%">{{forloop.counter}}</td>
+				<td style="width:50%">{{ variant.product.name|title }} {% if variant.size %} - ({{ variant.size|upper }}) {% endif %}</td>
+				<td style="width:15%">{% for qty in checkout.order.quantity %} {% if forloop.counter == forloop.parentloop.counter %} {{ qty }} {% endif %} {% endfor %}</td>
+				<td style="width:30%"> {% for price in checkout.order.price %} {% if forloop.counter == forloop.parentloop.counter %} {{ price|floatformat|intcomma }} {% endif %} {% endfor %}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	
+	</table>
+	
+	
+	<p style="font-family:courier;font-size:20px;">Subtotal <b>N {{ checkout.order.amount|floatformat|intcomma }}</b></p>
+	<p style="font-family:courier;font-size:20px;margin-top:-15px">Transportation <b>N {{ checkout.transportation|floatformat|intcomma }}</b></p>
+	<p style="font-family:courier;font-size:20px;margin-top:-15px">Total <b>N {{ checkout.grand_total|floatformat|intcomma }}</b></p>
+
+	<p style="font-family:courier;font-size:20px;margin-top:-15px">Expected Date: <b>{{ checkout.delivery_date }}</b></p>
+	<p style="font-family:courier;font-size:20px;margin-top:-15px">Expected Time: <b>{{ checkout.delivery_time }}</b></p>
+
+</div>
+{%endblock %}

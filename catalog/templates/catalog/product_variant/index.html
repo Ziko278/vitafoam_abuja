@@ -1,0 +1,48 @@
+{% extends 'site_admin/layout.html' %}
+{% block 'page' %} Catalog {% endblock %}
+{% block 'subpage' %} Products {% endblock %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<div class="col-12">
+    <div class="card recent-sales overflow-auto">
+
+        <div class="card-body">
+            <h5 class="card-title">Product Variants</h5>
+            <table class="table table-borderless datatable">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Size</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Price(N)</th>
+                    <th scope="col" class="text-center">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if variant_list %}
+                {% for variant in variant_list %}
+                <tr>
+                    <th scope="row"><a href="#">{{ forloop.counter }}</a></th>
+                    <td style="padding-left:20px">{{ variant.product.name|capfirst }}</td>
+                    <td style="padding-left:20px">{{ variant.size|upper }}</td>
+                    <td style="padding-left:20px">{{ variant.product.category.title|capfirst }}</td>
+                    <td style="padding-left:20px">{{ variant.price|floatformat|intcomma}}</td>
+                    <td class="text-center">
+                        <a href="{% url 'variant_detail' variant.id %}" class="btn btn-primary">Detail</a>
+                        <a href="{% url 'variant_delete' variant.id %}" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                    <tr><td colspan="10"><h3 class="text-center">No Available Product</h3></td></tr>
+                {% endif %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

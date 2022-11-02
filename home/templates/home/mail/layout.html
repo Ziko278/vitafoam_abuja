@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Male_Fashion Template">
+    <meta name="keywords" content="Male_Fashion, clothing, Accessories">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{site_info.title}}</title>
+
+
+</head>
+
+<body>
+	<div class=""  style="background:white;height:70px">
+        <a href="http://{{domain}}{% url 'home' %}"><img src="http://{{domain}}/media/{{site_info.logo}}" style="height:60px;width:120px" alt=""></a>
+	</div>
+{% block 'main' %}{%endblock %}
+
+
+</body>
+
+</html>

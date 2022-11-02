@@ -1,0 +1,22 @@
+{% extends 'home/layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block 'main' %}
+<!-- Banner Section Begin -->
+    <section class="banner spad" style="margin-top:-50px">
+        <div class="container">
+			<div class="row" style="font-family:san-serif">
+                <div class="col-lg-4 col-md-4 col-sm-6">
+                    <div class="about__item">
+						<p class="text-center"><i class="fa fa-gift" style="font-size:40px;color:orange"></i></p>
+                        <h4 style="font-family:san-serif;text-shadow:1px 1px orange">YOUR ORDER HAS BEEN SUCCESFULLY PLACED, THANK YOU FOR CHOOSING {{ site_info.name|upper }}</h4>
+                        
+                    </div>
+                </div>
+                
+            </div>
+
+        </div>
+    </section>
+    <!-- Banner Section End -->
+{%endblock %}

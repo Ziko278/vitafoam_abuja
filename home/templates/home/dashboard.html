@@ -1,0 +1,67 @@
+{% extends 'home/layout.html' %}
+{% load static %}
+{% block 'main' %}
+{% load humanize %}
+<!-- ======= Hero Section ======= -->
+<div id="hero" style="height:100px;background:#0e1d34" class=" d-flex align-items-center">
+
+</div><!-- End Hero Section -->
+
+<!-- ======= Featured Services Section ======= -->
+<section id="featured-services" class="featured-services" style="padding-top:30px">
+    <div class="container">
+        <div class="row gy-4">
+            <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up">
+                <div class="icon flex-shrink-0"><i class="fa-solid fa-user"></i></div>
+                <div>
+                    <h4 class="title">Account Detail</h4>
+                     <p class="description" style="text-align:justify"><label style="width:100px;"> Username:</label> <b>@{{ user }}</b></p>
+                    <p class="description" style="text-align:justify"><label style="width:100px;"> Email:</label> <b>{{ user.email|lower }}</b></p>
+                     <p class="description" style="text-align:justify"><label style="width:100px;"> Fullname: </label><b>{% if profile.full_name %} {{ profile.full_name|title }} {% else %} ------------------ {% endif %}</b></p>
+
+                </div>
+            </div>
+            <!-- End Service Item -->
+
+            <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="100">
+                <div class="icon flex-shrink-0"><i class="fa-solid fa-wallet"></i></div>
+                <div>
+                    <h4 class="title">Wallet Detail </h4>
+                    <h1 class="escription" style="text-align:justify">N {{ user_wallet.balance|intcomma }} </h1>
+                    <a href="{% url 'deposit' %}" class="btn btn-outline-primary">Fund Wallet</a>
+                </div>
+            </div><!-- End Service Item -->
+
+            <div class="col-lg-4 col-md-6 service-item d-flex" data-aos="fade-up" data-aos-delay="200">
+                <div class="icon flex-shrink-0"><i class="fa-solid fa-star"></i></div>
+                <div>
+                    <h4 class="title">Reputation Detail</h4>
+                    <p class="description" style="text-align:justify"><b>{{ user_wallet.reputation|floatformat|intcomma }}</b></p>
+                    <p class="description" style="text-align:justify">
+                        <span style="">
+                            {% if user_wallet.star >= 1 %} <i class="fa-solid fa-star ratingstar" style="color:gold"></i> {% endif %}
+                            {% if user_wallet.star > 1 and user_wallet.star < 2 %} <i class="fa-solid fa-star-half ratingstar" style="color:gold"></i> {% endif %}
+                            {% if user_wallet.star >= 2 %}<i class="fa-solid fa-star ratingstar" style="color:gold"></i> {% endif %}
+                            {% if user_wallet.star > 2 and user_wallet.star < 3 %}<i class="fa-solid fa-star-half ratingstar" style="color:gold"></i> {% endif %}
+                            {% if user_wallet.star >= 3 %}<i class="fa-solid fa-star ratingstar" style="color:gold"></i>{% endif %}
+                            {% if user_wallet.star > 3 and user_wallet.star < 4 %}<i class="fa-solid fa-star-half ratingstar" style="color:gold"></i> {% endif %}
+                            {% if user_wallet.star >= 4 %}<i class="fa-solid fa-star ratingstar" style="color:gold"></i>{% endif %}
+                            {% if user_wallet.star > 4 and user_wallet.star < 5 %}<i class="fa-solid fa-star ratingstar" style="color:gold"></i> {% endif %}
+                            {% if user_wallet.star == 5 %}<i class="fa-solid fa-star ratingstar" style="color:gold"></i>{% endif %}
+
+
+                            {% if user_wallet.star == 0 %}<i class="fa-solid fa-star ratingstar" style="color:grey"></i>{% endif %}
+                            {% if user_wallet.star <= 1 %}<i class="fa-solid fa-star ratingstar" style="color:grey"></i>{% endif %}
+                            {% if user_wallet.star <= 2 %}<i class="fa-solid fa-star ratingstar" style="color:grey"></i>{% endif %}
+                            {% if user_wallet.star <= 3 %}<i class="fa-solid fa-star ratingstar" style="color:grey"></i>{% endif %}
+                            {% if user_wallet.star <= 4 %}<i class="fa-solid fa-star ratingstar" style="color:grey"></i>{% endif %}
+
+                        </span>
+                        ({{ user_wallet.star_count}})</p>
+                </div>
+            </div><!-- End Service Item -->
+
+        </div>
+    </div>
+</section><!-- End Featured Services Section -->
+{%endblock %}
